@@ -9,7 +9,7 @@ import orderRoute from "./routes/order.routes.js";
 export const app = e()
 
 app.use(cors({
-    origin: "https://foodora-frontend-git-main-siddhant18.vercel.app",
+    origin: "https://foodora-frontend.vercel.app",
     credentials: true
 }));
 app.use(cookieParser())
