@@ -4,6 +4,15 @@ import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import foodPartnerModel from '../models/foodpartner.model.js';
 
+
+const isProduction = process.env.NODE_ENV === "production";
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax"
+};
+
 // register user
 
 async function registerUser(req,res) {
@@ -27,7 +36,7 @@ async function registerUser(req,res) {
             
         },process.env.Jwt_secret) 
 
-    res.cookie('token',token)
+    res.cookie('token', token, cookieOptions);
     
     res.status(201).json({
         message:"user registerd",
@@ -63,7 +72,7 @@ async function loginUser(req,res) {
         id : user._id
 
     },process.env.Jwt_secret)
-    const cookies = res.cookie('token',token)
+    res.cookie('token', token, cookieOptions);
     res.status(201).json({
         message:"user registerd",
         user:{
@@ -77,7 +86,7 @@ async function loginUser(req,res) {
 
 // logout User
 async function logOutUser(req,res) {
-    res.clearCookie("token");
+    res.clearCookie("token", cookieOptions);
     res.status(200).json({
         message:"User logged out successfully"
     })
@@ -131,7 +140,7 @@ async function registerFoodPatner(req, res) {
     }
   );
 
-  res.cookie("foodPartnerToken", token);
+  res.cookie("foodPartnerToken", token, cookieOptions);
 
   return res.status(201).json({
     message: "Food Partner registered successfully"
@@ -170,7 +179,7 @@ async function loginFoodPartner(req, res) {
         process.env.Jwt_secret
     );
 
-    res.cookie("foodPartnerToken", token);
+    res.cookie("foodPartnerToken", token, cookieOptions);
 
     return res.status(200).json({
         message: "Login successful"
@@ -181,7 +190,7 @@ async function loginFoodPartner(req, res) {
 
 // LogOut food partner
 async function logOutFoodPartner(req,res) {
-    res.clearCookie("foodPartnerToken")
+    res.clearCookie("foodPartnerToken", cookieOptions);
     res.status(200).json({
         message:"FoodPartner logout sucessfull"
     })
